@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#102b2b">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Сила по минуте">
+  <meta name="description" content="Четыре недели коротких силовых подходов: турник дома, отжимания на работе. Отмечайте выполнение и следите за прогрессом.">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="apple-touch-icon" href="./icon-180.png">
+  <title>Сила по минуте · 4 недели</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f3f5f2; --surface: #ffffff; --ink: #132627; --muted: #667578;
+      --line: #e1e8e4; --accent: #227b67; --accent2: #dcf1e8; --accent3: #165a4e;
+      --hero: #122e30; --hero2: #234c48; --shadow: 0 8px 26px rgba(15,39,36,.045);
+      --radius: 21px;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; background: var(--bg); color: var(--ink); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+    button, input { font: inherit; }
+    button { -webkit-tap-highlight-color: transparent; }
+    .shell { width: min(100%, 580px); margin: 0 auto; padding: max(20px, env(safe-area-inset-top)) 17px max(38px, env(safe-area-inset-bottom)); }
+    .brand { display:flex; justify-content:space-between; align-items:center; margin: 4px 2px 18px; }
+    .brand-lockup { display:flex; align-items:center; gap: 10px; }
+    .brand-icon { width: 35px; height: 35px; background:#dcebe4; color:#166a59; display:grid; place-items:center; border-radius:11px; }
+    .brand-name { font-size: 14px; font-weight: 750; letter-spacing: .01em; }
+    .brand-sub { display:block; color:var(--muted); font-size:11px; font-weight:500; margin-top:2px; }
+    .date-chip { padding: 8px 10px; border:1px solid var(--line); border-radius:50px; color:#526568; font-size:11px; background:#fff; white-space:nowrap; }
+    .hero { background: linear-gradient(120deg, var(--hero), var(--hero2)); border-radius: 25px; padding: 25px 23px 21px; color:#fff; position:relative; overflow:hidden; box-shadow:0 18px 30px rgba(17,47,42,.12); }
+    .hero::before, .hero::after { content:""; position:absolute; border:1px solid rgba(207,255,226,.13); width:235px; height:235px; border-radius:50%; pointer-events:none; }
+    .hero::before { top:-136px; right:-57px; } .hero::after { top:-110px; right:-85px; }
+    .eyebrow { letter-spacing:.17em; font-size:10px; font-weight:850; color:#9bd9c3; text-transform:uppercase; margin:0 0 10px; }
+    h1 { font-weight:780; font-size: clamp(27px,7.2vw,36px); letter-spacing:-.045em; line-height:1.1; margin: 0 0 10px; }
+    .hero-description { color:#c6ddda; font-size:13px; line-height:1.5; max-width:350px; margin:0; }
+    .hero-divider { height:1px; background:rgba(255,255,255,.17); margin:23px 0 18px; }
+    .hero-stats { display:flex; align-items:center; gap: 20px; }
+    .main-stat { min-width:145px; }
+    .big-number { font-size:37px; font-weight:750; letter-spacing:-.04em; line-height:1; font-variant-numeric:tabular-nums; }
+    .big-number .denom { font-size:19px; font-weight:550; color:#92b4ae; }
+    .stat-label { font-size:11px; color:#c1d9d4; margin-top:8px; }
+    .small-stat { padding-left:17px; border-left:1px solid rgba(255,255,255,.20); }
+    .small-stat strong { font-size:22px; font-weight:700; font-variant-numeric:tabular-nums; display:block; }
+    .progress-track { height:7px; background:rgba(255,255,255,.20); border-radius:10px; margin-top:20px; overflow:hidden; }
+    .progress-fill { height:100%; width:0; background:#a5e6cb; border-radius:10px; transition:width .25s ease; }
+    .today-banner { display:flex; gap:11px; align-items:center; background:#e8efe9; color:#315951; padding:13px 15px; font-size:12px; line-height:1.45; border:1px solid #dce9df; border-radius:15px; margin:13px 0 22px; }
+    .today-banner svg { flex: 0 0 auto; }
+    .section-head { display:flex; justify-content:space-between; gap:10px; align-items:flex-end; margin: 25px 3px 13px; }
+    h2 { font-size:20px; margin:0; font-weight:760; letter-spacing:-.035em; }
+    .section-sub { color:var(--muted); font-size:12px; margin: 5px 0 0; }
+    .week-pills { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:7px; margin-bottom:15px; }
+    .week-pill { border:1px solid #e0e8e3; border-radius:13px; background:#fff; padding:11px 4px 10px; text-align:center; color:#657472; cursor:pointer; min-height:57px; }
+    .week-pill .n { display:block; font-weight:750; font-size:14px; margin-bottom:4px; color:#526461; }
+    .week-pill .sub { display:block; font-size:10px; }
+    .week-pill[aria-selected="true"] { color:#fff; border-color:var(--accent3); background:var(--accent3); box-shadow:0 6px 14px rgba(19,95,78,.15); }
+    .week-pill[aria-selected="true"] .n { color:#fff; }
+    .week-summary { display:flex; justify-content:space-between; align-items:center; background: #fff; border:1px solid var(--line); border-radius: 16px; padding:14px 16px; margin-bottom:12px; }
+    .week-summary b { font-size:14px; }
+    .week-summary span { color:var(--muted); font-size:12px; display:block; margin-top:3px; }
+    .week-summary .progress-text { text-align:right; font-weight:750; font-size:19px; color:var(--accent3); white-space:nowrap; font-variant-numeric:tabular-nums; }
+    .week-summary .progress-text small { color:#95aaa2; font-weight:500; font-size:13px; }
+    .day-card { background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); padding:17px 17px 14px; margin:11px 0; }
+    .day-card.today { border-color:#58ae8e; box-shadow:0 0 0 2px rgba(73,162,130,.10); }
+    .day-top { display:flex; align-items:center; justify-content:space-between; gap:8px; padding-bottom: 12px; }
+    .day-top-left { display:flex; align-items:center; gap:10px; }
+    .date-block { background:#f2f5f1; width:46px; min-width:46px; height:49px; display:flex; align-items:center; flex-direction:column; justify-content:center; border-radius:11px; }
+    .date-block strong { font-size:20px; line-height:1.03; font-weight:780; }
+    .date-block small { font-size:10px; color:var(--muted); text-transform:uppercase; margin-top:2px; }
+    .day-weekday { text-transform:capitalize; font-size:14px; font-weight:750; }
+    .day-full { color:var(--muted); font-size:11px; margin-top:4px; }
+    .day-status { font-size:11px; padding:6px 9px; background:#f2f5f3; border-radius:20px; color:#64766d; text-align:right; white-space:nowrap; }
+    .day-status.done { background:#dbf3e9; color:#206b57; font-weight:700; }
+    .day-status.now { background:#f9eecf; color:#83651b; font-weight:700; }
+    .exercise { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:13px 0; border-top:1px solid #edf1ed; }
+    .exercise:last-child { padding-bottom:1px; }
+    .exercise-name { display:flex; align-items:center; gap:9px; font-size:13px; font-weight:700; }
+    .exercise-symbol { color:#2f7865; background:#eff6f1; border-radius:10px; width:33px; height:33px; display:grid; place-items:center; flex:0 0 auto; }
+    .exercise-desc { margin:5px 0 0 42px; color:var(--muted); font-size:11px; }
+    .sets { display:flex; gap:6px; flex:0 0 auto; }
+    .set-toggle { border:1px solid #d7e3da; background:#fff; color:#51645f; width:53px; height:49px; border-radius:12px; cursor:pointer; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1px; user-select:none; transition:background .13s, border-color .13s, color .13s; }
+    .set-toggle:active { transform:scale(.96); }
+    .set-toggle .mark { width:17px; height:17px; display:grid; place-items:center; font-size:14px; font-weight:800; }
+    .set-toggle .mark svg { width:17px; height:17px; }
+    .set-toggle .tiny { font-size:9px; font-weight:600; }
+    .set-toggle[aria-pressed="true"] { background: #1d856b; border-color:#1d856b; color:#fff; }
+    .set-toggle:focus-visible, .week-pill:focus-visible, .utility:focus-visible { outline:3px solid #a6d8c7; outline-offset:2px; }
+    .bottom-tip { display:flex; gap:10px; color:#617570; font-size:12px; line-height:1.55; margin:16px 3px 19px; align-items:flex-start; }
+    .bottom-tip svg { flex:0 0 auto; margin-top:1px; color:#368b75; }
+    .data-card { background:#fff; border:1px solid var(--line); border-radius:18px; margin-top:21px; padding:16px; }
+    .data-card h3 { font-size:14px; margin:0 0 6px; }
+    .data-card p { color:var(--muted); font-size:11px; line-height:1.55; margin:0 0 12px; }
+    .actions { display:flex; flex-wrap:wrap; gap:8px; }
+    .utility { background:#f4f7f5; border:1px solid #dae6df; color:#2e6353; border-radius:11px; min-height:40px; padding:9px 12px; cursor:pointer; font-size:11px; font-weight:700; }
+    .utility.danger { color:#a34a4a; background:#fff; border-color:#e8dede; }
+    .footer { color:#82908b; font-size:11px; text-align:center; line-height:1.6; padding: 22px 12px 5px; }
+    .toast { position:fixed; bottom:max(22px,env(safe-area-inset-bottom)); left:50%; transform:translateX(-50%); width:max-content; max-width:calc(100% - 28px); border-radius:12px; background:#203d35; color:#fff; font-size:12px; padding:12px 16px; z-index:20; box-shadow:0 15px 26px rgba(12,30,29,.20); opacity:0; pointer-events:none; transition:opacity .18s; }
+    .toast.show { opacity:1; }
+    #fileImport { display:none; }
+    .warn { display:none; background:#fff2da; color:#78530e; border:1px solid #f4dfa9; padding:12px; margin:12px 0; font-size:12px; border-radius:12px; }
+    .warn.visible { display:block; }
+    @media (max-width:365px) { .shell { padding-left:12px; padding-right:12px; } .exercise-name { font-size:12px; } .exercise-desc { font-size:10px; } .set-toggle { width:45px; } .day-card { padding:14px 12px; } .date-chip { display:none; } }
+    @media (prefers-reduced-motion:reduce) { *, *::before, *::after { transition:none!important; } }
+  </style>
+</head>
+<body>
+<main class="shell">
+  <div class="brand">
+    <div class="brand-lockup">
+      <div class="brand-icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 9v6M8 6v12M16 6v12M19 9v6M8 12h8"/></svg></div>
+      <div class="brand-name">Сила по минуте<span class="brand-sub">Личный трекер нагрузок</span></div>
+    </div>
+    <div class="date-chip">19.10 — 15.11.2026</div>
+  </div>
+
+  <section class="hero" aria-label="Общий прогресс">
+    <div class="eyebrow">Четыре недели · Без надрыва</div>
+    <h1>Немного.<br>Но регулярно.</h1>
+    <p class="hero-description">Подтягивания дома, отжимания на работе. Один подход — и продолжаешь заниматься своими делами.</p>
+    <div class="hero-divider"></div>
+    <div class="hero-stats">
+      <div class="main-stat"><div class="big-number"><span id="totalDone">0</span><span class="denom"> / 36</span></div><div class="stat-label">подходов выполнено</div></div>
+      <div class="small-stat"><strong id="daysDone">0 / 12</strong><div class="stat-label">дней завершено</div></div>
+    </div>
+    <div class="progress-track" role="progressbar" aria-label="Общий прогресс" aria-valuemin="0" aria-valuemax="36" aria-valuenow="0" id="totalBar"><div class="progress-fill" id="totalFill"></div></div>
+  </section>
+
+  <div class="today-banner" id="nextTraining"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/></svg><span>План начинается 19 октября.</span></div>
+  <div id="storageWarning" class="warn" role="alert">Этот режим браузера не разрешает надежно хранить отметки. Для постоянного сохранения открой приложение через обычный HTTPS-адрес и периодически делай резервную копию.</div>
+
+  <div class="section-head"><div><h2>Расписание</h2><p class="section-sub">Понедельник · Среда · Пятница</p></div></div>
+  <div class="week-pills" role="tablist" aria-label="Выбор недели" id="weekTabs"></div>
+  <section id="weekContent" role="tabpanel" aria-live="polite"></section>
+
+  <div class="bottom-tip"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 10v6m0-10v.5"/></svg><span>Отмечай каждый выполненный подход нажатием на квадрат. Нажми повторно, чтобы отменить отметку. Не работай до отказа; пропущенные дни не нужно наверстывать.</span></div>
+
+  <section class="data-card">
+    <h3>Твои отметки — только на этом устройстве</h3>
+    <p>Приложение сохраняет результаты в памяти браузера. Аккаунт и интернет для отметок не нужны. Если очистишь данные сайта или откроешь его в другом браузере, история может исчезнуть. Для переноса используй резервную копию.</p>
+    <div class="actions">
+      <button class="utility" type="button" id="exportBtn">↓ Сохранить копию</button>
+      <button class="utility" type="button" id="importBtn">↑ Восстановить</button>
+      <button class="utility danger" type="button" id="resetBtn">Сбросить</button>
+    </div>
+    <input id="fileImport" type="file" accept="application/json,.json" aria-label="Файл резервной копии">
+  </section>
+  <footer class="footer">19 октября — 15 ноября 2026 · Сохраняй сон в приоритете.</footer>
+</main>
+<div class="toast" role="status" id="toast"></div>
+<script>
+(function () {
+  'use strict';
+  const STORAGE_KEY = 'strength-snacks-2026-v1';
+  const DAYS_OF_WEEK = ['Воскресенье','Понедельник','Вторник','Среда','Четверг','Пятница','Суббота'];
+  const MONTHS = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
+  const WEEK_INFO = [
+    { start: [2026,9,19], label:'19–25 октября', push:12, pull:4, sets:1 },
+    { start: [2026,9,26], label:'26 окт. – 1 нояб.', push:16, pull:5, sets:1 },
+    { start: [2026,10,2], label:'2–8 ноября', push:15, pull:5, sets:2 },
+    { start: [2026,10,9], label:'9–15 ноября', push:20, pull:6, sets:2 }
+  ];
+  const date = (arr, addDays=0) => new Date(arr[0], arr[1], arr[2]+addDays,12,0,0);
+  const isoLocal = d => [d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-');
+  const currentDate = () => isoLocal(new Date());
+  const workouts = WEEK_INFO.flatMap((w,wi) => [0,2,4].map((off,di) => ({ wi, di, date:date(w.start,off), keys: [...Array(w.sets)].flatMap((_,si)=>[`${wi}-${di}-push-${si}`,`${wi}-${di}-pull-${si}`]) })));
+  const validKeys = new Set(workouts.flatMap(w=>w.keys));
+  const TOTAL = validKeys.size;
+  let chosenWeek = Math.min(3,Math.max(0, WEEK_INFO.findIndex((w,i) => i===3 || currentDate() < isoLocal(date(WEEK_INFO[i+1].start)))));
+  let checked = {};
+  let storageWorks = true;
+  let toastTimer;
+  function load() {
+    try {
+      const data = localStorage.getItem(STORAGE_KEY);
+      if (data) {
+        const parsed = JSON.parse(data);
+        const states = parsed && typeof parsed === 'object' ? (parsed.checked || parsed) : {};
+        Object.keys(states || {}).forEach(key => { if (validKeys.has(key) && states[key] === true) checked[key] = true; });
+      }
+      const testKey = STORAGE_KEY + '-test'; localStorage.setItem(testKey,'1'); localStorage.removeItem(testKey);
+    } catch (e) { storageWorks=false; document.getElementById('storageWarning').classList.add('visible'); }
+  }
+  function persist() {
+    if (!storageWorks) return;
+    try { localStorage.setItem(STORAGE_KEY,JSON.stringify({ version:1, checked, updatedAt:new Date().toISOString() })); }
+    catch(e) { storageWorks=false; document.getElementById('storageWarning').classList.add('visible'); notify('Не удалось сохранить. Сделай резервную копию.'); }
+  }
+  function notify(message) {
+    const t = document.getElementById('toast'); t.textContent=message; t.classList.add('show');
+    clearTimeout(toastTimer); toastTimer=setTimeout(()=>t.classList.remove('show'),2700);
+  }
+  function makeWeekTabs(){
+    document.getElementById('weekTabs').innerHTML = WEEK_INFO.map((w,i)=>`<button type="button" role="tab" id="tab-${i}" aria-controls="weekContent" aria-selected="${i===chosenWeek}" tabindex="${i===chosenWeek?0:-1}" class="week-pill" data-week="${i}"><span class="n">${i+1}-я</span><span class="sub">неделя</span></button>`).join('');
+  }
+  const checkIcon='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 4 4L19 6"/></svg>';
+  const icons={
+    push:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M3 16h18M5 13l4-4 5 4 5-4M5 13l-2 3M19 9l2 7"/><circle cx="9" cy="6" r="2"/></svg>',
+    pull:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M2 4h20M6 4v5l4 3m8-8v5l-4 3M10 12h4M10 12v6m4-6v6M10 18l-2 3m6-3 2 3"/></svg>'
+  };
+  function exerciseHTML(w,di,kind){
+    const isPush=kind==='push'; const name=isPush?'Отжимания':'Подтягивания';
+    const reps=isPush?w.push:w.pull; const location=isPush?'На работе':'Дома';
+    const items=[...Array(w.sets)].map((_,si)=>{
+      const key=`${chosenWeek}-${di}-${kind}-${si}`; const done=!!checked[key];
+      return `<button type="button" class="set-toggle" aria-label="${name}, подход ${si+1}, ${reps} повторений. ${done?'Выполнено, отменить':'Отметить выполнение'}" aria-pressed="${done}" data-set="${key}"><span class="mark">${done?checkIcon:(si+1)}</span><span class="tiny">подход</span></button>`;
+    }).join('');
+    return `<div class="exercise"><div><div class="exercise-name"><span class="exercise-symbol" aria-hidden="true">${icons[kind]}</span><span>${name}</span></div><p class="exercise-desc">${location} · ${reps} раз ${w.sets===1?'':'в каждом'}</p></div><div class="sets">${items}</div></div>`;
+  }
+  function render() {
+    makeWeekTabs();
+    const info=WEEK_INFO[chosenWeek]; const weekWorkouts=workouts.filter(d=>d.wi===chosenWeek);
+    const doneWeek=weekWorkouts.flatMap(d=>d.keys).filter(k=>checked[k]).length;
+    const weekTotal=weekWorkouts.flatMap(d=>d.keys).length;
+    let weekHTML=`<div class="week-summary"><div><b>${chosenWeek+1}-я неделя</b><span>${info.label} · ${info.sets===1?'по одному подходу':'по два подхода'}</span></div><div class="progress-text">${doneWeek} <small>/ ${weekTotal}</small></div></div>`;
+    weekHTML+=weekWorkouts.map(({di,date:workDate,keys})=>{
+      const done=keys.filter(k=>checked[k]).length; const complete=done===keys.length; const today=isoLocal(workDate)===currentDate();
+      const status=complete?`<span class="day-status done">✓ Завершено</span>`:today?`<span class="day-status now">Сегодня · ${done}/${keys.length}</span>`:`<span class="day-status">${done}/${keys.length} подходов</span>`;
+      return `<article class="day-card ${today?'today':''}"><div class="day-top"><div class="day-top-left"><div class="date-block"><strong>${workDate.getDate()}</strong><small>${workDate.getMonth()===9?'окт':'ноя'}</small></div><div><div class="day-weekday">${DAYS_OF_WEEK[workDate.getDay()]}</div><div class="day-full">${workDate.getDate()} ${MONTHS[workDate.getMonth()]}</div></div></div>${status}</div>${exerciseHTML(info,di,'push')}${exerciseHTML(info,di,'pull')}</article>`;
+    }).join('');
+    document.getElementById('weekContent').innerHTML=weekHTML;
+    const count=Object.keys(checked).filter(k=>checked[k]&&validKeys.has(k)).length;
+    document.getElementById('totalDone').textContent=count;
+    document.getElementById('totalFill').style.width=`${count/TOTAL*100}%`;
+    document.getElementById('totalBar').setAttribute('aria-valuenow',String(count));
+    document.getElementById('daysDone').textContent=`${workouts.filter(day=>day.keys.every(k=>checked[k])).length} / 12`;
+    updateNextTraining();
+  }
+  function updateNextTraining(){
+    const today=currentDate();
+    const banner=document.getElementById('nextTraining');
+    const todayWorkout=workouts.find(d=>isoLocal(d.date)===today);
+    const future=workouts.find(d=>isoLocal(d.date)>today);
+    if(todayWorkout){
+      const n=todayWorkout.keys.filter(k=>checked[k]).length;
+      banner.querySelector('span').textContent=`Сегодня по плану — отжимания и подтягивания. ${n===todayWorkout.keys.length?'Все подходы отмечены.':`Выполнено ${n} из ${todayWorkout.keys.length} подходов.`}`;
+    } else if(future){
+      banner.querySelector('span').textContent=`Следующий день по плану — ${DAYS_OF_WEEK[future.date.getDay()].toLowerCase()}, ${future.date.getDate()} ${MONTHS[future.date.getMonth()]}. Отдых и сон остаются в приоритете.`;
+    } else {
+      banner.querySelector('span').textContent='Четырехнедельный период завершен. Можно сохранить результаты и перейти к следующему этапу.';
+    }
+  }
+  document.getElementById('weekTabs').addEventListener('click',e=>{
+    const tab=e.target.closest('[data-week]'); if(!tab) return;
+    chosenWeek=Number(tab.dataset.week); render();
+  });
+  document.getElementById('weekContent').addEventListener('click',e=>{
+    const toggle=e.target.closest('button[data-set]'); if(!toggle) return;
+    const key=toggle.dataset.set; if(!validKeys.has(key)) return;
+    if(checked[key]) delete checked[key]; else checked[key]=true;
+    persist(); render();
+  });
+  document.getElementById('exportBtn').addEventListener('click',()=>{
+    try {
+      const file=new Blob([JSON.stringify({app:'Сила по минуте',version:1,period:'2026-10-19/2026-11-15',checked,exportedAt:new Date().toISOString()},null,2)],{type:'application/json;charset=utf-8'});
+      const url=URL.createObjectURL(file); const a=document.createElement('a'); a.href=url; a.download=`sila-po-minute-${currentDate()}.json`;
+      document.body.append(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(url),5000);
+      notify('Резервная копия подготовлена');
+    } catch(e) { notify('Не удалось создать файл'); }
+  });
+  document.getElementById('importBtn').addEventListener('click',()=>document.getElementById('fileImport').click());
+  document.getElementById('fileImport').addEventListener('change',async function(){
+    const file=this.files&&this.files[0]; if(!file)return;
+    try {
+      const data=JSON.parse(await file.text());
+      if(!data || data.version!==1 || !data.checked || typeof data.checked!=='object' || !('period' in data) || data.period!=='2026-10-19/2026-11-15') throw Error('incorrect format');
+      const next={}; Object.keys(data.checked).forEach(k=>{ if(validKeys.has(k)&&data.checked[k]===true)next[k]=true; });
+      if(!confirm(`Восстановить ${Object.keys(next).length} отметок из файла? Текущие отметки будут заменены.`))return;
+      checked=next; persist(); render(); notify('Отметки восстановлены');
+    } catch(e) { alert('Не удалось прочитать копию. Выбери JSON-файл, сохраненный из этого приложения.'); }
+    finally { this.value=''; }
+  });
+  document.getElementById('resetBtn').addEventListener('click',()=>{
+    if(!confirm('Удалить все отметки за четыре недели? Это действие нельзя отменить без резервной копии.'))return;
+    checked={}; persist(); render(); notify('Все отметки сброшены');
+  });
+  load(); render();
+  if('serviceWorker' in navigator && /^https?:$/.test(location.protocol)){
+    window.addEventListener('load',()=>{navigator.serviceWorker.register('./service-worker.js').catch(()=>{});});
+  }
+})();
+</script>
+</body>
+</html>
